@@ -8,14 +8,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 String? _generatedLink;
 
-class SolicitudGruaPage extends StatefulWidget {
-  const SolicitudGruaPage({Key? key}) : super(key: key);
+class FormPage extends StatefulWidget {
+  const FormPage({Key? key}) : super(key: key);
 
   @override
-  _SolicitudGruaPageState createState() => _SolicitudGruaPageState();
+  _FormPageState createState() => _FormPageState();
 }
 
-class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
+class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>();
   final _nombreController = TextEditingController();
   final _telefonoController = TextEditingController();
@@ -324,6 +324,17 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
         double.parse(_currentUri!.queryParameters['longitud'] ?? '0');
     final location = LatLng(latitud, longitud);
 
+    final parameterTitles = {
+      'nombre': 'Nombre',
+      'telefono': 'Teléfono',
+      'tipoCarro': 'Tipo de Carro',
+      'marca': 'Marca',
+      'modelo': 'Modelo',
+      'color': 'Color',
+      'placa': 'Placa',
+      'ubicacion': 'Ubicación',
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Datos de Link Grua'),
@@ -337,8 +348,10 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
             itemCount: queryParams.length,
             itemBuilder: (BuildContext context, int index) {
               final parameter = queryParams[index];
+              final parameterTitle =
+                  parameterTitles[parameter.key] ?? parameter.key;
               return ListTile(
-                title: Text(parameter.key),
+                title: Text(parameterTitle),
                 subtitle: Text(parameter.value),
               );
             },
