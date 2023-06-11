@@ -59,14 +59,10 @@ class _FormPageState extends State<FormPage> {
   }
 
   void _handleIncomingLink(Uri? uri) {
-    // Lógica para manejar el enlace entrante, si es necesario
     if (uri != null) {
       setState(() {
         _currentUri = uri;
       });
-      // Realiza las acciones necesarias con el enlace recibido
-      // por ejemplo, extraer los parámetros de la query
-      // y realizar alguna acción basada en ellos
       final queryParams = uri.queryParameters;
       final nombre = queryParams['nombre'];
       final telefono = queryParams['telefono'];
@@ -77,9 +73,6 @@ class _FormPageState extends State<FormPage> {
       final placa = queryParams['placa'];
       final ubicacion = queryParams['ubicacion'];
 
-      // Realiza la lógica necesaria con los datos recibidos
-      // por ejemplo, mostrar una notificación, llenar los campos
-      // del formulario, etc.
       print('Enlace entrante:');
       print('Nombre: $nombre');
       print('Teléfono: $telefono');
@@ -111,7 +104,6 @@ class _FormPageState extends State<FormPage> {
       if (permissionStatus != PermissionStatus.granted) {
         SystemNavigator.pop();
         _showLocationServiceDisabledDialog();
-        // El usuario denegó los permisos de ubicación, maneja este caso según tus necesidades
         return;
       }
     }
@@ -142,8 +134,6 @@ class _FormPageState extends State<FormPage> {
             TextButton(
               child: const Text('Configuración'),
               onPressed: () {
-                Navigator.of(context).pop();
-                // Abrir la configuración de la aplicación
                 Location().requestService();
               },
             ),
@@ -159,7 +149,6 @@ class _FormPageState extends State<FormPage> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Generar el enlace con los datos del formulario
       final link = Uri(
         scheme: 'https',
         host: 'gruapp.help',
@@ -175,7 +164,7 @@ class _FormPageState extends State<FormPage> {
           'longitud': _ubicacionActualLon,
         },
       );
-      // Reiniciar los campos del formulario
+
       _nombreController.clear();
       _telefonoController.clear();
       _tipoCarroController.clear();
@@ -188,9 +177,8 @@ class _FormPageState extends State<FormPage> {
         _ubicacionActualLon = '';
       });
 
-      // Comparte el link
       _shareLink(link.toString());
-      // Actualizar la variable _generatedLink
+
       setState(() {
         _generatedLink = link.toString();
       });
@@ -356,10 +344,9 @@ class _FormPageState extends State<FormPage> {
               );
             },
           ),
-          const SizedBox(
-              height: 16.0), // Espacio entre la lista de parámetros y el mapa
+          const SizedBox(height: 16.0),
           Container(
-            height: 300, // Ajusta la altura del mapa según tus necesidades
+            height: 300,
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: location,
