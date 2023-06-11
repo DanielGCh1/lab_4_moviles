@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:uni_links/uni_links.dart' as uni_links;
 import 'package:share/share.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 String? _generatedLink;
 
@@ -23,8 +24,9 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
   final _modeloController = TextEditingController();
   final _colorController = TextEditingController();
   final _placaController = TextEditingController();
-  String _ubicacionActual = '';
-  Uri? _currentUri = null;
+  String _ubicacionActualLat = '';
+  String _ubicacionActualLon = '';
+  Uri? _currentUri;
   @override
   void dispose() {
     _nombreController.dispose();
@@ -116,8 +118,8 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
 
     final currentLocation = await location.getLocation();
     setState(() {
-      _ubicacionActual =
-          'Latitud: ${currentLocation.latitude}, Longitud: ${currentLocation.longitude}';
+      _ubicacionActualLat = "${currentLocation.latitude}";
+      _ubicacionActualLon = "${currentLocation.longitude}";
     });
   }
 
@@ -169,7 +171,8 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
           'modelo': _modeloController.text,
           'color': _colorController.text,
           'placa': _placaController.text,
-          'ubicacion': _ubicacionActual,
+          'latitud': _ubicacionActualLat,
+          'longitud': _ubicacionActualLon,
         },
       );
       // Reiniciar los campos del formulario
@@ -181,7 +184,8 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
       _colorController.clear();
       _placaController.clear();
       setState(() {
-        _ubicacionActual = '';
+        _ubicacionActualLat = '';
+        _ubicacionActualLon = '';
       });
 
       // Comparte el link
@@ -297,7 +301,7 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Ubicación Actual: $_ubicacionActual',
+                "Ubicación Actual: Logitud $_ubicacionActualLon, Latitud $_ubicacionActualLat",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -314,23 +318,49 @@ class _SolicitudGruaPageState extends State<SolicitudGruaPage> {
 
   Widget buildLink(BuildContext context) {
     final queryParams = _currentUri!.queryParameters.entries.toList();
+    final latitud =
+        double.parse(_currentUri!.queryParameters['latitud'] ?? '0');
+    final longitud =
+        double.parse(_currentUri!.queryParameters['longitud'] ?? '0');
+    final location = LatLng(latitud, longitud);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Datos de Link Grua'),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: queryParams.length,
-          itemBuilder: (BuildContext context, int index) {
-            final parameter = queryParams[index];
-            return ListTile(
-              title: Text(parameter.key),
-              subtitle: Text(parameter.value),
-            );
-          },
-        ),
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: queryParams.length,
+            itemBuilder: (BuildContext context, int index) {
+              final parameter = queryParams[index];
+              return ListTile(
+                title: Text(parameter.key),
+                subtitle: Text(parameter.value),
+              );
+            },
+          ),
+          const SizedBox(
+              height: 16.0), // Espacio entre la lista de parámetros y el mapa
+          Container(
+            height: 300, // Ajusta la altura del mapa según tus necesidades
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: location,
+                zoom: 15,
+              ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId('locationMarker'),
+                  position: location,
+                ),
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
