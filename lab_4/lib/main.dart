@@ -13,16 +13,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Grua Help App',
       theme: ThemeData(
-          textTheme:
-              GoogleFonts.nunitoSansTextTheme(Theme.of(context).textTheme),
+          scaffoldBackgroundColor: Color.fromARGB(255, 190, 202, 207),
           appBarTheme: AppBarTheme(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Color.fromARGB(255, 9, 84, 86),
               elevation: 0,
               centerTitle: true,
-              titleTextStyle:
-                  GoogleFonts.nunito(color: Colors.black, fontSize: 20))),
+              titleTextStyle: GoogleFonts.nunito(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 20))),
       home: const FormPage(),
     );
   }

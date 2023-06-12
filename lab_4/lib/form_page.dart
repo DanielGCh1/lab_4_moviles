@@ -85,6 +85,13 @@ class _FormPageState extends State<FormPage> {
     }
   }
 
+  void _showSuccessMessage() {
+    SnackBar(
+      content: Text('¡Éxito! Mensaje enviado correctamente.'),
+      duration: Duration(seconds: 2),
+    );
+  }
+
   Future<void> _obtenerUbicacionActual() async {
     final location = Location();
     bool serviceEnabled;
@@ -192,7 +199,8 @@ class _FormPageState extends State<FormPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
+        child: SingleChildScrollView(
+            child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,24 +290,45 @@ class _FormPageState extends State<FormPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _obtenerUbicacionActual,
-                child: const Text('Obtener Ubicación Actual'),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: _obtenerUbicacionActual,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 9, 84, 86),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.location_on),
+                      const SizedBox(width: 8),
+                      const Text('Ubicación Actual'),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                "Ubicación Actual: Logitud $_ubicacionActualLon, Latitud $_ubicacionActualLat",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Enviar Solicitud de Grúa'),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 9, 84, 86),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.send),
+                      const SizedBox(width: 8),
+                      const Text('Enviar Solicitud de Grúa'),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-        ),
+        )),
       ),
     );
   }
@@ -320,16 +349,22 @@ class _FormPageState extends State<FormPage> {
       'modelo': 'Modelo',
       'color': 'Color',
       'placa': 'Placa',
-      'ubicacion': 'Ubicación',
+      'latitud': 'Latitud',
+      'longitud': 'Longitud',
     };
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Datos de Link Grua'),
+        title: const Text('Formulario de Grua'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
+          Image.asset(
+            'assets/images/grua.png',
+            height: 200,
+          ),
+          const SizedBox(height: 16.0),
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
